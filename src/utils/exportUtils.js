@@ -1,199 +1,59 @@
-import { getCurrentDate } from './helpers';
+// Utility functions to export data
 
-// Generic CSV Export Function
-export const exportToCSV = (data, filename, headers) => {
-  if (!data || data.length === 0) {
-    alert('No data to export!');
-    return;
+export const exportExpenses = (expenses, format = 'json') => {
+  downloadFile(expenses, format, 'expenses');
+};
+
+export const exportNotes = (notes, format = 'json') => {
+  downloadFile(notes, format, 'notes');
+};
+
+export const exportTasks = (tasks, format = 'json') => {
+  downloadFile(tasks, format, 'tasks');
+};
+
+export const exportGoals = (goals, format = 'json') => {
+  downloadFile(goals, format, 'goals');
+};
+
+export const exportHabits = (habits, format = 'json') => {
+  downloadFile(habits, format, 'habits');
+};
+
+const downloadFile = (data, format, filename) => {
+  let content = '';
+  let mime = '';
+
+  if (format === 'csv') {
+    content = convertToCSV(data);
+    mime = 'text/csv';
+    filename += '.csv';
+  } else {
+    content = JSON.stringify(data, null, 2);
+    mime = 'application/json';
+    filename += '.json';
   }
 
-  // Create CSV content
-  const csvContent = [
-    headers.join(','),
-    ...data.map(row => 
-      headers.map(header => {
-        const value = row[header] || '';
-        // Escape quotes and wrap in quotes if contains comma
-        return `"${String(value).replace(/"/g, '""')}"`;
-      }).join(',')
-    )
-  ].join('\n');
-
-  // Create blob and download
-  const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+  const blob = new Blob([content], { type: mime });
   const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = `${filename}_${getCurrentDate()}.csv`;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+
+  document.body.removeChild(a);
   URL.revokeObjectURL(url);
 };
 
-// Generic Text Export Function
-export const exportToTXT = (data, filename, formatter) => {
-  if (!data || data.length === 0) {
-    alert('No data to export!');
-    return;
-  }
+const convertToCSV = (data) => {
+  if (!Array.isArray(data) || data.length === 0) return '';
 
-  // Create text content
-  const txtContent = `
-═══════════════════════════════════════════════════
-${filename.toUpperCase()} REPORT
-═══════════════════════════════════════════════════
-Generated: ${new Date().toLocaleString('en-IN')}
-═══════════════════════════════════════════════════
+  const headers = Object.keys(data[0]);
+  const rows = data.map(item =>
+    headers.map(h => `"${item[h] ?? ''}"`).join(',')
+  );
 
-${data.map((item, index) => formatter(item, index + 1)).join('\n\n───────────────────────────────────────────────────\n\n')}
-
-═══════════════════════════════════════════════════
-Total Records: ${data.length}
-═══════════════════════════════════════════════════
-`;
-
-  // Create blob and download
-  const blob = new Blob([txtContent], { type: 'text/plain;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = `${filename}_${getCurrentDate()}.txt`;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
-};
-
-// Export Expenses
-export const exportExpenses = (expenses, format = 'csv') => {
-  if (format === 'csv') {
-    exportToCSV(
-      expenses,
-      'expenses',
-      ['title', 'amount', 'category', 'date']
-    );
-  } else {
-    exportToTXT(
-      expenses,
-      'expenses',
-      (expense, index) => `
-${index}. ${expense.title}
-   Amount: ₹${expense.amount.toLocaleString('en-IN')}
-   Category: ${expense.category}
-   Date: ${new Date(expense.date).toLocaleDateString('en-IN')}
-      `
-    );
-  }
-};
-
-// Export Notes
-export const exportNotes = (notes, format = 'csv') => {
-  if (format === 'csv') {
-    exportToCSV(
-      notes,
-      'notes',
-      ['title', 'content', 'category', 'date', 'icon']
-    );
-  } else {
-    exportToTXT(
-      notes,
-      'notes',
-      (note, index) => `
-${index}. ${note.icon} ${note.title}
-   Category: ${note.category}
-   Content: ${note.content}
-   Date: ${new Date(note.date).toLocaleDateString('en-IN')}
-      `
-    );
-  }
-};
-
-// Export Tasks
-export const exportTasks = (tasks, format = 'csv') => {
-  if (format === 'csv') {
-    exportToCSV(
-      tasks,
-      'tasks',
-      ['title', 'category', 'completed', 'dueDate', 'dueTime', 'reminder']
-    );
-  } else {
-    exportToTXT(
-      tasks,
-      'tasks',
-      (task, index) => `
-${index}. ${task.title}
-   Category: ${task.category}
-   Status: ${task.completed ? 'Completed ✓' : 'Pending'}
-   Due Date: ${new Date(task.dueDate).toLocaleDateString('en-IN')}
-   Due Time: ${task.dueTime}
-   Reminder: ${task.reminder ? 'Yes' : 'No'}
-      `
-    );
-  }
-};
-
-// Export Goals
-export const exportGoals = (goals, format = 'csv') => {
-  if (format === 'csv') {
-    exportToCSV(
-      goals,
-      'goals',
-      ['title', 'progress']
-    );
-  } else {
-    exportToTXT(
-      goals,
-      'goals',
-      (goal, index) => `
-${index}. ${goal.title}
-   Progress: ${goal.progress}%
-   Status: ${goal.progress === 100 ? 'Completed ✓' : 'In Progress'}
-      `
-    );
-  }
-};
-
-// Export Habits
-export const exportHabits = (habits, format = 'csv') => {
-  if (format === 'csv') {
-    exportToCSV(
-      habits,
-      'habits',
-      ['title', 'completed', 'streak']
-    );
-  } else {
-    exportToTXT(
-      habits,
-      'habits',
-      (habit, index) => `
-${index}. ${habit.title}
-   Status: ${habit.completed ? 'Done Today ✓' : 'Pending'}
-   Streak: ${habit.streak} day${habit.streak !== 1 ? 's' : ''} 🔥
-      `
-    );
-  }
-};
-
-// Export All Data
-export const exportAllData = (data) => {
-  const allData = {
-    expenses: data.expenses || [],
-    notes: data.notes || [],
-    tasks: data.tasks || [],
-    goals: data.goals || [],
-    habits: data.habits || [],
-    settings: data.settings || {}
-  };
-
-  const jsonContent = JSON.stringify(allData, null, 2);
-  const blob = new Blob([jsonContent], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = `personal_manager_backup_${getCurrentDate()}.json`;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
+  return [headers.join(','), ...rows].join('\n');
 };
