@@ -1,45 +1,10 @@
-{
-  "name": "personal-manager-indian",
-  "version": "1.0.0",
-  "description": "Personal Manager App - Indian Edition for managing finances, tasks, notes, goals, and habits",
-  "private": true,
-  "homepage": "https://yourusername.github.io/personal-manager-app",
-  "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1",
-    "web-vitals": "^3.3.2"
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  content: [
+    "./src/**/*.{js,jsx,ts,tsx}"
+  ],
+  theme: {
+    extend: {},
   },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
-  },
-  "devDependencies": {
-    "autoprefixer": "^10.4.14",
-    "gh-pages": "^5.0.0",
-    "postcss": "^8.4.24",
-    "tailwindcss": "^3.3.2"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
-}
+  plugins: [],
+};
