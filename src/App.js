@@ -11,13 +11,13 @@ import GoalsPage from './components/GoalsPage';
 import HabitsPage from './components/HabitsPage';
 import SettingsPage from './components/SettingsPage';
 
-// Modals
-import AddExpenseModal from './Modals/AddExpenseModal';
-import AddNoteModal from './Modals/AddNoteModal';
-import AddTaskModal from './Modals/AddTaskModal';
-import AddGoalModal from './Modals/AddGoalModal';
-import AddHabitModal from './Modals/AddHabitModal';
-import ResetDialog from './Modals/ResetDialog';
+// Modals - FIXED: Added components/ to path
+import AddExpenseModal from './components/Modals/AddExpenseModal';
+import AddNoteModal from './components/Modals/AddNoteModal';
+import AddTaskModal from './components/Modals/AddTaskModal';
+import AddGoalModal from './components/Modals/AddGoalModal';
+import AddHabitModal from './components/Modals/AddHabitModal';
+import ResetDialog from './components/Modals/ResetDialog';
 
 // Utils
 import { STORAGE_KEYS, defaultSettings } from './utils/constants';
