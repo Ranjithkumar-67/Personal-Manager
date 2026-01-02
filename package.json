@@ -1,9 +1,9 @@
 {
   "name": "personal-manager-indian",
   "version": "1.0.0",
-  "description": "Personal Manager App - Indian Edition for managing finances, tasks, notes, goals, and habits",
+  "description": "Personal Manager App - Indian Edition",
   "private": true,
-  "homepage": "https://ranjithkumar-67.github.io/personal-manager-app",
+  "homepage": "https://ranjithkumar-67.github.io/Personal-Manager",
   "dependencies": {
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -12,7 +12,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "CI=false react-scripts build",
+    "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
