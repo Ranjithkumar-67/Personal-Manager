@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './App.css';
 
-// Components
+// Pages & Components
 import LoginScreen from './components/LoginScreen';
 import Navigation from './components/Navigation';
 import HomePage from './components/HomePage';
@@ -11,7 +11,7 @@ import GoalsPage from './components/GoalsPage';
 import HabitsPage from './components/HabitsPage';
 import SettingsPage from './components/SettingsPage';
 
-// Modals - FIXED: Added components/ to path
+// Modals
 import AddExpenseModal from './components/Modals/AddExpenseModal';
 import AddNoteModal from './components/Modals/AddNoteModal';
 import AddTaskModal from './components/Modals/AddTaskModal';
@@ -22,38 +22,38 @@ import ResetDialog from './components/Modals/ResetDialog';
 // Utils
 import { STORAGE_KEYS, defaultSettings } from './utils/constants';
 import { checkNotificationPermission, showNotification } from './utils/helpers';
-import { 
-  exportExpenses, 
-  exportNotes, 
-  exportTasks, 
-  exportGoals, 
-  exportHabits 
+import {
+  exportExpenses,
+  exportNotes,
+  exportTasks,
+  exportGoals,
+  exportHabits
 } from './utils/exportUtils';
 
 function App() {
-  // Authentication State
+  /* ---------------- AUTH ---------------- */
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userId, setUserId] = useState('');
   const [displayName, setDisplayName] = useState('User');
 
-  // UI State
+  /* ---------------- UI ---------------- */
   const [page, setPage] = useState('home');
   const [isDarkTheme, setIsDarkTheme] = useState(true);
   const [currentTime, setCurrentTime] = useState(new Date());
 
-  // Data State
+  /* ---------------- DATA ---------------- */
   const [notes, setNotes] = useState([]);
   const [tasks, setTasks] = useState([]);
   const [goals, setGoals] = useState([]);
   const [habits, setHabits] = useState([]);
   const [expenses, setExpenses] = useState([]);
 
-  // Settings State
+  /* ---------------- SETTINGS ---------------- */
   const [monthlySalary, setMonthlySalary] = useState(defaultSettings.monthlySalary);
   const [monthlyLimit, setMonthlyLimit] = useState(defaultSettings.monthlyLimit);
   const [income, setIncome] = useState(defaultSettings.income);
 
-  // Modal States
+  /* ---------------- MODALS ---------------- */
   const [showAddExpense, setShowAddExpense] = useState(false);
   const [showAddNote, setShowAddNote] = useState(false);
   const [showAddTask, setShowAddTask] = useState(false);
@@ -61,50 +61,41 @@ function App() {
   const [showAddHabit, setShowAddHabit] = useState(false);
   const [showResetDialog, setShowResetDialog] = useState(false);
 
-  // Load data from localStorage on mount
+  /* ---------------- LOAD LOCAL STORAGE ---------------- */
   useEffect(() => {
     const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME);
     if (savedTheme !== null) setIsDarkTheme(savedTheme === 'true');
 
     const savedUser = localStorage.getItem(STORAGE_KEYS.USER);
     if (savedUser) {
-      const userData = JSON.parse(savedUser);
+      const u = JSON.parse(savedUser);
       setIsLoggedIn(true);
-      setUserId(userData.userId);
-      setDisplayName(userData.displayName || 'User');
+      setUserId(u.userId);
+      setDisplayName(u.displayName || 'User');
+      setPage('home'); // 🔑 CRITICAL
     }
 
-    const savedNotes = localStorage.getItem(STORAGE_KEYS.NOTES);
-    if (savedNotes) setNotes(JSON.parse(savedNotes));
+    setNotes(JSON.parse(localStorage.getItem(STORAGE_KEYS.NOTES) || '[]'));
+    setTasks(JSON.parse(localStorage.getItem(STORAGE_KEYS.TASKS) || '[]'));
+    setGoals(JSON.parse(localStorage.getItem(STORAGE_KEYS.GOALS) || '[]'));
+    setHabits(JSON.parse(localStorage.getItem(STORAGE_KEYS.HABITS) || '[]'));
+    setExpenses(JSON.parse(localStorage.getItem(STORAGE_KEYS.EXPENSES) || '[]'));
 
-    const savedTasks = localStorage.getItem(STORAGE_KEYS.TASKS);
-    if (savedTasks) setTasks(JSON.parse(savedTasks));
+    const settings = JSON.parse(localStorage.getItem(STORAGE_KEYS.SETTINGS) || '{}');
+    setMonthlySalary(settings.monthlySalary || defaultSettings.monthlySalary);
+    setMonthlyLimit(settings.monthlyLimit || defaultSettings.monthlyLimit);
+    setIncome(settings.income || defaultSettings.income);
 
-    const savedGoals = localStorage.getItem(STORAGE_KEYS.GOALS);
-    if (savedGoals) setGoals(JSON.parse(savedGoals));
-
-    const savedHabits = localStorage.getItem(STORAGE_KEYS.HABITS);
-    if (savedHabits) setHabits(JSON.parse(savedHabits));
-
-    const savedExpenses = localStorage.getItem(STORAGE_KEYS.EXPENSES);
-    if (savedExpenses) setExpenses(JSON.parse(savedExpenses));
-
-    const savedSettings = localStorage.getItem(STORAGE_KEYS.SETTINGS);
-    if (savedSettings) {
-      const settings = JSON.parse(savedSettings);
-      setMonthlySalary(settings.monthlySalary || defaultSettings.monthlySalary);
-      setMonthlyLimit(settings.monthlyLimit || defaultSettings.monthlyLimit);
-      setIncome(settings.income || defaultSettings.income);
-    }
-
-    // Request notification permission
     checkNotificationPermission();
   }, []);
 
-  // Save data to localStorage
+  /* ---------------- SAVE LOCAL STORAGE ---------------- */
   useEffect(() => {
     if (isLoggedIn) {
-      localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify({ userId, displayName }));
+      localStorage.setItem(
+        STORAGE_KEYS.USER,
+        JSON.stringify({ userId, displayName })
+      );
     }
   }, [isLoggedIn, userId, displayName]);
 
@@ -133,132 +124,56 @@ function App() {
   }, [expenses]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify({
-      monthlySalary,
-      monthlyLimit,
-      income
-    }));
+    localStorage.setItem(
+      STORAGE_KEYS.SETTINGS,
+      JSON.stringify({ monthlySalary, monthlyLimit, income })
+    );
   }, [monthlySalary, monthlyLimit, income]);
 
-  // Clock update every second
+  /* ---------------- CLOCK ---------------- */
   useEffect(() => {
-    const timer = setInterval(() => setCurrentTime(new Date()), 1000);
-    return () => clearInterval(timer);
+    const t = setInterval(() => setCurrentTime(new Date()), 1000);
+    return () => clearInterval(t);
   }, []);
 
-  // Check for task reminders every minute
-  useEffect(() => {
-    const checkReminders = setInterval(() => {
-      const now = new Date();
-      tasks.forEach(task => {
-        if (task.reminder && !task.completed) {
-          const dueTime = new Date(`${task.dueDate} ${task.dueTime}`);
-          const timeDiff = dueTime - now;
-          
-          // Notify 5 minutes before
-          if (timeDiff > 0 && timeDiff <= 300000 && timeDiff > 240000) {
-            showNotification('Task Reminder', `${task.title} is due in 5 minutes!`, '📋');
-          }
-        }
-      });
-    }, 60000); // Check every minute
-    
-    return () => clearInterval(checkReminders);
-  }, [tasks]);
-
-  // Login handler
+  /* ---------------- LOGIN ---------------- */
   const handleLogin = (uid, pin) => {
     setUserId(uid);
     setIsLoggedIn(true);
-    
-    // Save login date
-    if (!localStorage.getItem(STORAGE_KEYS.LOGIN_DATE)) {
-      localStorage.setItem(STORAGE_KEYS.LOGIN_DATE, new Date().toISOString());
-    }
+    setPage('home'); // 🔥 THIS FIXES WHITE SCREEN
+    localStorage.setItem(STORAGE_KEYS.LOGIN_DATE, new Date().toISOString());
   };
 
-  // Logout handler
   const handleLogout = () => {
-    if (window.confirm('Are you sure you want to logout?')) {
-      setIsLoggedIn(false);
-      setUserId('');
-      setDisplayName('User');
-      setPage('home');
-    }
+    setIsLoggedIn(false);
+    setUserId('');
+    setDisplayName('User');
+    setPage('home');
+    localStorage.clear();
   };
 
-  // Reset handlers
-  const handleReset = () => {
-    setExpenses([]);
-    setNotes([]);
-    setTasks([]);
-    setGoals([]);
-    setHabits([]);
-    setIncome(monthlySalary);
-  };
+  /* ---------------- EXPORT ---------------- */
+  const handleExportExpenses = f => exportExpenses(expenses, f);
+  const handleExportNotes = f => exportNotes(notes, f);
+  const handleExportTasks = f => exportTasks(tasks, f);
+  const handleExportGoals = f => exportGoals(goals, f);
+  const handleExportHabits = f => exportHabits(habits, f);
 
-  const handleResetWithNewLimit = () => {
-    setExpenses([]);
-    setNotes([]);
-    setTasks([]);
-    setGoals([]);
-    setHabits([]);
-    // Redirect to settings to edit salary
-    setPage('settings');
-  };
-
-  // 3D Card Effect Handlers
-  const handle3DMove = (e, divisor = 20) => {
-    const card = e.currentTarget;
-    const rect = card.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    const centerX = rect.width / 2;
-    const centerY = rect.height / 2;
-    const rotateX = (y - centerY) / divisor;
-    const rotateY = (centerX - x) / divisor;
-    
-    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
-  };
-
-  const handle3DLeave = (e) => {
-    e.currentTarget.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
-  };
-
-  // Export handlers
-  const handleExportExpenses = (format) => {
-    exportExpenses(expenses, format);
-  };
-
-  const handleExportNotes = (format) => {
-    exportNotes(notes, format);
-  };
-
-  const handleExportTasks = (format) => {
-    exportTasks(tasks, format);
-  };
-
-  const handleExportGoals = (format) => {
-    exportGoals(goals, format);
-  };
-
-  const handleExportHabits = (format) => {
-    exportHabits(habits, format);
-  };
-
-  // Show login screen if not logged in
+  /* ---------------- LOGIN SCREEN ---------------- */
   if (!isLoggedIn) {
     return <LoginScreen onLogin={handleLogin} />;
   }
 
-  // Theme classes
+  /* ---------------- THEME ---------------- */
   const themeClasses = isDarkTheme
-    ? 'bg-gradient-to-br from-indigo-950 via-blue-950 to-slate-900 text-white'
-    : 'bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 text-gray-900';
+    ? 'bg-slate-900 text-white'
+    : 'bg-slate-100 text-gray-900';
 
   return (
-    <div className={`min-h-screen ${themeClasses} transition-colors duration-300`}>
-      {/* Navigation */}
+    <div
+      className={`min-h-screen ${themeClasses}`}
+      style={{ backgroundColor: isDarkTheme ? '#020617' : '#f8fafc' }}
+    >
       <Navigation
         currentPage={page}
         setPage={setPage}
@@ -268,74 +183,56 @@ function App() {
         displayName={displayName}
       />
 
-      {/* Main Content */}
       <div className="max-w-md mx-auto pt-20 pb-28 px-4">
         {page === 'home' && (
           <HomePage
-            isDarkTheme={isDarkTheme}
-            displayName={displayName}
             expenses={expenses}
             income={income}
             monthlyLimit={monthlyLimit}
-            setShowResetDialog={setShowResetDialog}
             setShowAddExpense={setShowAddExpense}
-            handle3DMove={handle3DMove}
-            handle3DLeave={handle3DLeave}
+            setShowResetDialog={setShowResetDialog}
             onExportExpenses={handleExportExpenses}
           />
         )}
 
         {page === 'notes' && (
           <NotesPage
-            isDarkTheme={isDarkTheme}
             notes={notes}
             setNotes={setNotes}
             setShowAddNote={setShowAddNote}
-            handle3DMove={handle3DMove}
-            handle3DLeave={handle3DLeave}
             onExportNotes={handleExportNotes}
           />
         )}
 
         {page === 'tasks' && (
           <TasksPage
-            isDarkTheme={isDarkTheme}
             tasks={tasks}
             setTasks={setTasks}
             setShowAddTask={setShowAddTask}
-            handle3DMove={handle3DMove}
-            handle3DLeave={handle3DLeave}
             onExportTasks={handleExportTasks}
           />
         )}
 
         {page === 'goals' && (
           <GoalsPage
-            isDarkTheme={isDarkTheme}
             goals={goals}
             setGoals={setGoals}
             setShowAddGoal={setShowAddGoal}
-            handle3DMove={handle3DMove}
-            handle3DLeave={handle3DLeave}
             onExportGoals={handleExportGoals}
           />
         )}
 
         {page === 'habits' && (
           <HabitsPage
-            isDarkTheme={isDarkTheme}
             habits={habits}
             setHabits={setHabits}
             setShowAddHabit={setShowAddHabit}
-            handle3DMove={handle3DMove}
-            handle3DLeave={handle3DLeave}
             onExportHabits={handleExportHabits}
           />
         )}
 
         {page === 'settings' && (
           <SettingsPage
-            isDarkTheme={isDarkTheme}
             displayName={displayName}
             setDisplayName={setDisplayName}
             monthlySalary={monthlySalary}
@@ -344,60 +241,62 @@ function App() {
             setIncome={setIncome}
             userId={userId}
             onLogout={handleLogout}
-            handle3DMove={handle3DMove}
-            handle3DLeave={handle3DLeave}
           />
+        )}
+
+        {/* Fallback — NEVER white screen again */}
+        {!['home','notes','tasks','goals','habits','settings'].includes(page) && (
+          <div className="text-center mt-10">Loading...</div>
         )}
       </div>
 
       {/* Modals */}
       {showAddExpense && (
         <AddExpenseModal
-          isDarkTheme={isDarkTheme}
           onClose={() => setShowAddExpense(false)}
-          onAdd={(expense) => setExpenses([...expenses, expense])}
+          onAdd={e => setExpenses([...expenses, e])}
         />
       )}
 
       {showAddNote && (
         <AddNoteModal
-          isDarkTheme={isDarkTheme}
           onClose={() => setShowAddNote(false)}
-          onAdd={(note) => setNotes([...notes, note])}
+          onAdd={n => setNotes([...notes, n])}
         />
       )}
 
       {showAddTask && (
         <AddTaskModal
-          isDarkTheme={isDarkTheme}
           onClose={() => setShowAddTask(false)}
-          onAdd={(task) => setTasks([...tasks, task])}
+          onAdd={t => setTasks([...tasks, t])}
         />
       )}
 
       {showAddGoal && (
         <AddGoalModal
-          isDarkTheme={isDarkTheme}
           onClose={() => setShowAddGoal(false)}
-          onAdd={(goal) => setGoals([...goals, goal])}
+          onAdd={g => setGoals([...goals, g])}
         />
       )}
 
       {showAddHabit && (
         <AddHabitModal
-          isDarkTheme={isDarkTheme}
           onClose={() => setShowAddHabit(false)}
-          onAdd={(habit) => setHabits([...habits, habit])}
+          onAdd={h => setHabits([...habits, h])}
         />
       )}
 
       {showResetDialog && (
         <ResetDialog
-          isDarkTheme={isDarkTheme}
           monthlySalary={monthlySalary}
           onClose={() => setShowResetDialog(false)}
-          onReset={handleReset}
-          onResetWithNewLimit={handleResetWithNewLimit}
+          onReset={() => {
+            setExpenses([]);
+            setNotes([]);
+            setTasks([]);
+            setGoals([]);
+            setHabits([]);
+          }}
         />
       )}
     </div>
