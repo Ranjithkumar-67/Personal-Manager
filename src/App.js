@@ -21,7 +21,7 @@ import ResetDialog from './components/Modals/ResetDialog';
 
 // Utils
 import { STORAGE_KEYS, defaultSettings } from './utils/constants';
-import { checkNotificationPermission, showNotification } from './utils/helpers';
+import { checkNotificationPermission } from './utils/helpers';
 import {
   exportExpenses,
   exportNotes,
@@ -61,7 +61,7 @@ function App() {
   const [showAddHabit, setShowAddHabit] = useState(false);
   const [showResetDialog, setShowResetDialog] = useState(false);
 
-  /* ---------------- LOAD LOCAL STORAGE ---------------- */
+  /* ---------------- LOAD STORAGE ---------------- */
   useEffect(() => {
     const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME);
     if (savedTheme !== null) setIsDarkTheme(savedTheme === 'true');
@@ -72,7 +72,7 @@ function App() {
       setIsLoggedIn(true);
       setUserId(u.userId);
       setDisplayName(u.displayName || 'User');
-      setPage('home'); // 🔑 CRITICAL
+      setPage('home');
     }
 
     setNotes(JSON.parse(localStorage.getItem(STORAGE_KEYS.NOTES) || '[]'));
@@ -89,7 +89,7 @@ function App() {
     checkNotificationPermission();
   }, []);
 
-  /* ---------------- SAVE LOCAL STORAGE ---------------- */
+  /* ---------------- SAVE STORAGE ---------------- */
   useEffect(() => {
     if (isLoggedIn) {
       localStorage.setItem(
@@ -104,52 +104,24 @@ function App() {
   }, [isDarkTheme]);
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.NOTES, JSON.stringify(notes));
-  }, [notes]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.TASKS, JSON.stringify(tasks));
-  }, [tasks]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.GOALS, JSON.stringify(goals));
-  }, [goals]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.HABITS, JSON.stringify(habits));
-  }, [habits]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.EXPENSES, JSON.stringify(expenses));
-  }, [expenses]);
-
-  useEffect(() => {
-    localStorage.setItem(
-      STORAGE_KEYS.SETTINGS,
-      JSON.stringify({ monthlySalary, monthlyLimit, income })
-    );
-  }, [monthlySalary, monthlyLimit, income]);
-
-  /* ---------------- CLOCK ---------------- */
-  useEffect(() => {
     const t = setInterval(() => setCurrentTime(new Date()), 1000);
     return () => clearInterval(t);
   }, []);
 
   /* ---------------- LOGIN ---------------- */
-  const handleLogin = (uid, pin) => {
+  const handleLogin = (uid) => {
     setUserId(uid);
     setIsLoggedIn(true);
-    setPage('home'); // 🔥 THIS FIXES WHITE SCREEN
+    setPage('home');
     localStorage.setItem(STORAGE_KEYS.LOGIN_DATE, new Date().toISOString());
   };
 
   const handleLogout = () => {
+    localStorage.clear();
     setIsLoggedIn(false);
     setUserId('');
     setDisplayName('User');
     setPage('home');
-    localStorage.clear();
   };
 
   /* ---------------- EXPORT ---------------- */
@@ -164,144 +136,132 @@ function App() {
     return <LoginScreen onLogin={handleLogin} />;
   }
 
-  /* ---------------- THEME ---------------- */
-  const themeClasses = isDarkTheme
-    ? 'bg-slate-900 text-white'
-    : 'bg-slate-100 text-gray-900';
-
+  /* ---------------- MAIN UI ---------------- */
   return (
     <div className={isDarkTheme ? 'dark' : ''}>
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-colors duration-300">
-      {/* EVERYTHING INSIDE */}
-      </div>
-  </div>
-);
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-colors duration-300">
 
-      <Navigation
-        currentPage={page}
-        setPage={setPage}
-        isDarkTheme={isDarkTheme}
-        setIsDarkTheme={setIsDarkTheme}
-        currentTime={currentTime}
-        displayName={displayName}
-      />
+        <Navigation
+          currentPage={page}
+          setPage={setPage}
+          isDarkTheme={isDarkTheme}
+          setIsDarkTheme={setIsDarkTheme}
+          currentTime={currentTime}
+          displayName={displayName}
+        />
 
-      <div className="max-w-md mx-auto pt-20 pb-28 px-4">
-        {page === 'home' && (
-          <HomePage
-            expenses={expenses}
-            income={income}
-            monthlyLimit={monthlyLimit}
-            setShowAddExpense={setShowAddExpense}
-            setShowResetDialog={setShowResetDialog}
-            onExportExpenses={handleExportExpenses}
+        <div className="max-w-md mx-auto pt-20 pb-28 px-4">
+          {page === 'home' && (
+            <HomePage
+              expenses={expenses}
+              income={income}
+              monthlyLimit={monthlyLimit}
+              setShowAddExpense={setShowAddExpense}
+              setShowResetDialog={setShowResetDialog}
+              onExportExpenses={handleExportExpenses}
+            />
+          )}
+
+          {page === 'notes' && (
+            <NotesPage
+              notes={notes}
+              setNotes={setNotes}
+              setShowAddNote={setShowAddNote}
+              onExportNotes={handleExportNotes}
+            />
+          )}
+
+          {page === 'tasks' && (
+            <TasksPage
+              tasks={tasks}
+              setTasks={setTasks}
+              setShowAddTask={setShowAddTask}
+              onExportTasks={handleExportTasks}
+            />
+          )}
+
+          {page === 'goals' && (
+            <GoalsPage
+              goals={goals}
+              setGoals={setGoals}
+              setShowAddGoal={setShowAddGoal}
+              onExportGoals={handleExportGoals}
+            />
+          )}
+
+          {page === 'habits' && (
+            <HabitsPage
+              habits={habits}
+              setHabits={setHabits}
+              setShowAddHabit={setShowAddHabit}
+              onExportHabits={handleExportHabits}
+            />
+          )}
+
+          {page === 'settings' && (
+            <SettingsPage
+              displayName={displayName}
+              setDisplayName={setDisplayName}
+              monthlySalary={monthlySalary}
+              setMonthlySalary={setMonthlySalary}
+              setMonthlyLimit={setMonthlyLimit}
+              setIncome={setIncome}
+              userId={userId}
+              onLogout={handleLogout}
+            />
+          )}
+        </div>
+
+        {/* MODALS */}
+        {showAddExpense && (
+          <AddExpenseModal
+            onClose={() => setShowAddExpense(false)}
+            onAdd={e => setExpenses([...expenses, e])}
           />
         )}
 
-        {page === 'notes' && (
-          <NotesPage
-            notes={notes}
-            setNotes={setNotes}
-            setShowAddNote={setShowAddNote}
-            onExportNotes={handleExportNotes}
+        {showAddNote && (
+          <AddNoteModal
+            onClose={() => setShowAddNote(false)}
+            onAdd={n => setNotes([...notes, n])}
           />
         )}
 
-        {page === 'tasks' && (
-          <TasksPage
-            tasks={tasks}
-            setTasks={setTasks}
-            setShowAddTask={setShowAddTask}
-            onExportTasks={handleExportTasks}
+        {showAddTask && (
+          <AddTaskModal
+            onClose={() => setShowAddTask(false)}
+            onAdd={t => setTasks([...tasks, t])}
           />
         )}
 
-        {page === 'goals' && (
-          <GoalsPage
-            goals={goals}
-            setGoals={setGoals}
-            setShowAddGoal={setShowAddGoal}
-            onExportGoals={handleExportGoals}
+        {showAddGoal && (
+          <AddGoalModal
+            onClose={() => setShowAddGoal(false)}
+            onAdd={g => setGoals([...goals, g])}
           />
         )}
 
-        {page === 'habits' && (
-          <HabitsPage
-            habits={habits}
-            setHabits={setHabits}
-            setShowAddHabit={setShowAddHabit}
-            onExportHabits={handleExportHabits}
+        {showAddHabit && (
+          <AddHabitModal
+            onClose={() => setShowAddHabit(false)}
+            onAdd={h => setHabits([...habits, h])}
           />
         )}
 
-        {page === 'settings' && (
-          <SettingsPage
-            displayName={displayName}
-            setDisplayName={setDisplayName}
+        {showResetDialog && (
+          <ResetDialog
             monthlySalary={monthlySalary}
-            setMonthlySalary={setMonthlySalary}
-            setMonthlyLimit={setMonthlyLimit}
-            setIncome={setIncome}
-            userId={userId}
-            onLogout={handleLogout}
+            onClose={() => setShowResetDialog(false)}
+            onReset={() => {
+              setExpenses([]);
+              setNotes([]);
+              setTasks([]);
+              setGoals([]);
+              setHabits([]);
+            }}
           />
         )}
-
-        {/* Fallback — NEVER white screen again */}
-        {!['home','notes','tasks','goals','habits','settings'].includes(page) && (
-          <div className="text-center mt-10">Loading...</div>
-        )}
       </div>
-
-      {/* Modals */}
-      {showAddExpense && (
-        <AddExpenseModal
-          onClose={() => setShowAddExpense(false)}
-          onAdd={e => setExpenses([...expenses, e])}
-        />
-      )}
-
-      {showAddNote && (
-        <AddNoteModal
-          onClose={() => setShowAddNote(false)}
-          onAdd={n => setNotes([...notes, n])}
-        />
-      )}
-
-      {showAddTask && (
-        <AddTaskModal
-          onClose={() => setShowAddTask(false)}
-          onAdd={t => setTasks([...tasks, t])}
-        />
-      )}
-
-      {showAddGoal && (
-        <AddGoalModal
-          onClose={() => setShowAddGoal(false)}
-          onAdd={g => setGoals([...goals, g])}
-        />
-      )}
-
-      {showAddHabit && (
-        <AddHabitModal
-          onClose={() => setShowAddHabit(false)}
-          onAdd={h => setHabits([...habits, h])}
-        />
-      )}
-
-      {showResetDialog && (
-        <ResetDialog
-          monthlySalary={monthlySalary}
-          onClose={() => setShowResetDialog(false)}
-          onReset={() => {
-            setExpenses([]);
-            setNotes([]);
-            setTasks([]);
-            setGoals([]);
-            setHabits([]);
-          }}
-        />
-      )}
     </div>
   );
 }
