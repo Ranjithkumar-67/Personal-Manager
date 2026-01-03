@@ -170,10 +170,9 @@ function App() {
     : 'bg-slate-100 text-gray-900';
 
   return (
-    <div
-      className={`min-h-screen ${themeClasses}`}
-      style={{ backgroundColor: isDarkTheme ? '#020617' : '#f8fafc' }}
-    >
+    <div className={isDarkTheme ? 'dark' : ''}>
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 transition-colors duration-300">
+      {/* EVERYTHING INSIDE */}
       <Navigation
         currentPage={page}
         setPage={setPage}
