@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import * as Icons from './Icons';
 import {
   getGreeting,
@@ -7,13 +7,14 @@ import {
   getDayOfYear
 } from '../utils/helpers';
 import { quotes, getCategoryIcon } from '../utils/constants';
-/* Animated percentage counter */
+
+/* ---------------- Animated Percentage ---------------- */
 const AnimatedPercentage = ({ value }) => {
   const [displayValue, setDisplayValue] = useState(0);
 
   useEffect(() => {
     let start = 0;
-    const duration = 800; // ms
+    const duration = 800;
     const stepTime = 16;
     const increment = value / (duration / stepTime);
 
@@ -36,7 +37,7 @@ const AnimatedPercentage = ({ value }) => {
   );
 };
 
-
+/* ---------------- Home Page ---------------- */
 const HomePage = ({
   isDarkTheme,
   displayName,
@@ -49,8 +50,6 @@ const HomePage = ({
   handle3DLeave,
   onExportExpenses
 }) => {
-
-  /* ✅ FORCE readable text inside cards */
   const cardClasses = isDarkTheme
     ? 'bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 text-white'
     : 'bg-white border-2 border-blue-200 text-slate-900';
@@ -132,13 +131,20 @@ const HomePage = ({
         </div>
       </div>
 
-      {/* BUDGET */}
+      {/* BUDGET PROGRESS */}
       <div className={`${cardClasses} p-6 rounded-2xl shadow-lg`}>
         <h3 className="text-lg font-bold mb-4">Budget Progress</h3>
 
         <div className="flex justify-center relative">
           <svg width="200" height="200" className="-rotate-90">
-            <circle cx="100" cy="100" r={radius} stroke="#334155" strokeWidth="12" fill="none" />
+            <circle
+              cx="100"
+              cy="100"
+              r={radius}
+              stroke="#334155"
+              strokeWidth="12"
+              fill="none"
+            />
             <circle
               cx="100"
               cy="100"
@@ -151,28 +157,24 @@ const HomePage = ({
               strokeLinecap="round"
             />
           </svg>
-        {/* CENTERED & ANIMATED BUDGET TEXT */}
-  <div
-  className="
-    absolute
-    inset-0
-    flex
-    flex-col
-    items-center
-    justify-center
-    text-center
-    bg-white/70
-    dark:bg-slate-900/60
-    backdrop-blur-sm
-    rounded-full
-  "
->
-  <AnimatedPercentage value={Math.round(budgetProgress)} />
 
-  <span className="mt-1 text-sm font-semibold text-slate-700 dark:text-slate-300">
-    of {formatIndianRupee(monthlyLimit)}
-  </span>
-</div>
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-center bg-white/70 dark:bg-slate-900/60 backdrop-blur-sm rounded-full">
+            <AnimatedPercentage value={Math.round(budgetProgress)} />
+            <span className="mt-1 text-sm font-semibold text-slate-700 dark:text-slate-300">
+              of {formatIndianRupee(monthlyLimit)}
+            </span>
+          </div>
+        </div>
+
+        <div className="flex justify-between mt-4 text-sm">
+          <span className="text-red-500 font-semibold">
+            Spent: {formatIndianRupee(totalExpenses)}
+          </span>
+          <span className="text-green-500 font-semibold">
+            Remaining: {formatIndianRupee(Math.max(0, remaining))}
+          </span>
+        </div>
+      </div>
 
       {/* TODAY */}
       <div className={`${cardClasses} p-6 rounded-2xl shadow-lg`}>
@@ -190,7 +192,7 @@ const HomePage = ({
         </button>
       </div>
 
-      {/* RECENT */}
+      {/* RECENT EXPENSES */}
       <div className={`${cardClasses} p-6 rounded-2xl shadow-lg`}>
         <h3 className="text-lg font-bold mb-4">Recent Expenses</h3>
 
@@ -201,7 +203,9 @@ const HomePage = ({
         ) : (
           recentExpenses.map(e => (
             <div key={e.id} className="flex justify-between py-2">
-              <span className="text-slate-300">{getCategoryIcon(e.category)} {e.title}</span>
+              <span className="text-slate-700 dark:text-slate-200">
+                {getCategoryIcon(e.category)} {e.title}
+              </span>
               <span className="font-bold text-red-400">
                 -{formatIndianRupee(e.amount)}
               </span>
