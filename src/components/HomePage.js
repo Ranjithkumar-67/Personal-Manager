@@ -122,17 +122,28 @@ const HomePage = ({
               strokeLinecap="round"
             />
           </svg>
+        {/* CENTERED & ANIMATED BUDGET TEXT */}
+  <div
+  className="
+    absolute
+    inset-0
+    flex
+    flex-col
+    items-center
+    justify-center
+    text-center
+    bg-white/70
+    dark:bg-slate-900/60
+    backdrop-blur-sm
+    rounded-full
+  "
+>
+  <AnimatedPercentage value={Math.round(budgetProgress)} />
 
-          <div className="absolute text-center">
-            <div className="text-4xl font-black text-blue-600 dark:text-blue-400">
-              {Math.round(budgetProgress)}%
-            </div>
-            <div className="text-sm text-slate-600 dark:text-slate-300">
-              of {formatIndianRupee(monthlyLimit)}
-            </div>
-          </div>
-        </div>
-      </div>
+  <span className="mt-1 text-sm font-semibold text-slate-700 dark:text-slate-300">
+    of {formatIndianRupee(monthlyLimit)}
+  </span>
+</div>
 
       {/* TODAY */}
       <div className={`${cardClasses} p-6 rounded-2xl shadow-lg`}>
