@@ -2,73 +2,33 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-    <meta name="theme-color" content="#4F46E5" />
-    <meta name="description" content="Personal Manager App - Indian Edition for managing finances, tasks, notes, goals, and habits" />
+
+    <!-- Mobile / PWA -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#020617" />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <!-- App Info -->
+    <meta
+      name="description"
+      content="Personal Manager App – Indian Edition"
+    />
+
+    <!-- Icons -->
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+
+    <!-- Manifest -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    
-    <!-- Google Fonts - Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <title>Personal Manager - Indian Edition</title>
-    
-    <style>
-      /* Loading Screen */
-      #loading-screen {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(to bottom right, #312e81, #1e3a8a, #0f172a);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 9999;
-      }
-      
-      .loader {
-        width: 50px;
-        height: 50px;
-        border: 5px solid rgba(255, 255, 255, 0.3);
-        border-top-color: #fff;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-      }
-      
-      @keyframes spin {
-        to { transform: rotate(360deg); }
-      }
-    </style>
+
+    <title>Personal Manager</title>
   </head>
-  <body>
+
+  <body class="bg-slate-900 text-white">
     <noscript>You need to enable JavaScript to run this app.</noscript>
-    
-    <!-- Loading Screen -->
-    <div id="loading-screen">
-      <div class="loader"></div>
-    </div>
-    
+
+    <!-- React mounts here -->
     <div id="root"></div>
-    
-    <script>
-      // Remove loading screen when app loads
-      window.addEventListener('load', function() {
-        setTimeout(function() {
-          const loadingScreen = document.getElementById('loading-screen');
-          if (loadingScreen) {
-            loadingScreen.style.opacity = '0';
-            loadingScreen.style.transition = 'opacity 0.5s';
-            setTimeout(() => loadingScreen.remove(), 500);
-          }
-        }, 500);
-      });
-    </script>
   </body>
 </html>
