@@ -7,6 +7,35 @@ import {
   getDayOfYear
 } from '../utils/helpers';
 import { quotes, getCategoryIcon } from '../utils/constants';
+/* Animated percentage counter */
+const AnimatedPercentage = ({ value }) => {
+  const [displayValue, setDisplayValue] = useState(0);
+
+  useEffect(() => {
+    let start = 0;
+    const duration = 800; // ms
+    const stepTime = 16;
+    const increment = value / (duration / stepTime);
+
+    const timer = setInterval(() => {
+      start += increment;
+      if (start >= value) {
+        start = value;
+        clearInterval(timer);
+      }
+      setDisplayValue(Math.round(start));
+    }, stepTime);
+
+    return () => clearInterval(timer);
+  }, [value]);
+
+  return (
+    <span className="text-4xl font-black text-blue-600 dark:text-blue-400">
+      {displayValue}%
+    </span>
+  );
+};
+
 
 const HomePage = ({
   isDarkTheme,
