@@ -23,8 +23,8 @@ const HomePage = ({
 
   /* STEP 3: Unified card background for light & dark */
   const cardClasses = isDarkTheme
-    ? 'bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700'
-    : 'bg-white border-2 border-blue-200';
+  ? 'bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 text-white'
+  : 'bg-white border-2 border-blue-200 text-slate-900';
 
   /* Calculations */
   const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
@@ -53,10 +53,10 @@ const HomePage = ({
       {/* STEP 3: Header */}
       <div className="flex justify-between items-start">
         <div>
-          <h1 className="text-2xl font-black text-slate-900 dark:text-white mb-1">
+          <h1 className="text-2xl font-black text-slate-900 dark:text-white">
             {getGreeting()} 👋
           </h1>
-          <p className="text-slate-600 dark:text-slate-400">
+          <p className="text-slate-600 dark:text-slate-300">
             Welcome, {displayName}
           </p>
         </div>
