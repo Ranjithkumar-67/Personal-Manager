@@ -51,13 +51,14 @@ const Navigation = ({ currentPage, setPage, isDarkTheme, setIsDarkTheme, current
             >
               {isDarkTheme ? <Icons.Sun size={20} /> : <Icons.Moon size={20} />}
             </button>
-            
-            <button 
-              className="p-2 rounded-lg hover:bg-white/10 transition-all hover:scale-110"
-              aria-label="User profile"
-            >
-              <Icons.User size={20} />
-            </button>
+           <button
+  onClick={() => setPage('settings')}
+  className="p-2 rounded-full hover:bg-white/10 transition"
+  title="Profile / Settings"
+>
+  <Icons.User size={20} />
+</button>
+
           </div>
         </div>
       </div>
