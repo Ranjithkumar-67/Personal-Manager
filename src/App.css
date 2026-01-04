@@ -252,6 +252,20 @@ input,
 textarea {
   @apply bg-white text-slate-900;
 }
+/* ===============================
+   GLOBAL CARD THEME FIX
+================================ */
+
+.app-card {
+  background-color: white;
+  color: #0f172a; /* slate-900 */
+}
+
+.dark .app-card {
+  background-color: #1e293b; /* slate-800 */
+  color: #f8fafc; /* slate-50 */
+  border: 1px solid #334155;
+}
 
 .dark input,
 .dark textarea {
