@@ -266,6 +266,27 @@ textarea {
   color: #f8fafc; /* slate-50 */
   border: 1px solid #334155;
 }
+/* ===============================
+   INPUTS & TEXTAREA DARK FIX
+================================ */
+
+input,
+textarea {
+  background-color: white;
+  color: #0f172a;
+}
+
+.dark input,
+.dark textarea {
+  background-color: #334155; /* slate-700 */
+  color: #f8fafc;
+  border-color: #475569;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #cbd5f5;
+}
 
 .dark input,
 .dark textarea {
