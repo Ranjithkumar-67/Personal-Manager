@@ -239,3 +239,11 @@ select {
     transition-duration: 0.01ms !important;
   }
 }
+/* ---------- App Card Theme Fix ---------- */
+.app-card {
+  @apply bg-white text-slate-900;
+}
+
+.dark .app-card {
+  @apply bg-slate-800 text-slate-100 border border-slate-700;
+}
