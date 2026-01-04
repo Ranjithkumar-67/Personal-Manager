@@ -50,9 +50,9 @@ const HomePage = ({
   handle3DLeave,
   onExportExpenses
 }) => {
-  const cardClasses = isDarkTheme
-    ? 'bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700 text-white'
-    : 'bg-white border-2 border-blue-200 text-slate-900';
+ const cardClasses = isDarkTheme
+  ? 'bg-gradient-to-br from-slate-800/80 to-slate-900/80 border border-slate-700 text-white'
+  : 'bg-white border-2 border-blue-200 text-slate-900';
 
   const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
   const todayExpenses = expenses
