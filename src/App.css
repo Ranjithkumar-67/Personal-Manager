@@ -247,3 +247,13 @@ select {
 .dark .app-card {
   @apply bg-slate-800 text-slate-100 border border-slate-700;
 }
+/* ---------- Inputs Dark Mode Fix ---------- */
+input,
+textarea {
+  @apply bg-white text-slate-900;
+}
+
+.dark input,
+.dark textarea {
+  @apply bg-slate-700 text-slate-100 placeholder-slate-400 border-slate-600;
+}
