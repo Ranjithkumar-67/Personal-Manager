@@ -132,7 +132,7 @@ const HomePage = ({
       </div>
 
       {/* BUDGET PROGRESS */}
-      <div className={`${cardClasses} p-6 rounded-2xl shadow-lg`}>
+      <div className={`${cardClasses} p-6 rounded-2xl shadow-md dark:shadow-none`}>
         <h3 className="text-lg font-bold mb-4">Budget Progress</h3>
 
         <div className="flex justify-center relative">
@@ -141,7 +141,7 @@ const HomePage = ({
               cx="100"
               cy="100"
               r={radius}
-              stroke="#334155"
+              stroke={isDarkTheme ? '#475569' : '#e5e7eb'}
               strokeWidth="12"
               fill="none"
             />
@@ -149,7 +149,7 @@ const HomePage = ({
               cx="100"
               cy="100"
               r={radius}
-              stroke="#3b82f6"
+              stroke={isDarkTheme ? '#60a5fa' : '#2563eb'}
               strokeWidth="12"
               fill="none"
               strokeDasharray={circumference}
@@ -157,8 +157,18 @@ const HomePage = ({
               strokeLinecap="round"
             />
           </svg>
+                <div
+                  className="
+                  absolute inset-0
+                  flex flex-col items-center justify-center text-center
+                  rounded-full
+                  backdrop-blur-xl
+                  bg-white/60
+                  dark:bg-slate-800/60
+                  ring-1 ring-white/40 dark:ring-white/10 "
+                  >
 
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-center bg-white/70 dark:bg-slate-900/60 backdrop-blur-sm rounded-full">
+      
             <AnimatedPercentage value={Math.round(budgetProgress)} />
             <span className="mt-1 text-sm font-semibold text-slate-700 dark:text-slate-300">
               of {formatIndianRupee(monthlyLimit)}
