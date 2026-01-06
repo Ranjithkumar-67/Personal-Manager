@@ -2,6 +2,8 @@ import React from 'react';
 import * as Icons from './Icons';
 import { clamp } from '../utils/helpers';
 
+const MAX_PROGRESS = 99;
+
 const GoalsPage = ({ 
   isDarkTheme, 
   goals, 
@@ -16,11 +18,16 @@ const GoalsPage = ({
     : 'bg-white border-2 border-blue-200';
 
   const handleUpdateProgress = (id, change) => {
-    setGoals(goals.map(goal => 
-      goal.id === id 
-        ? { ...goal, progress: clamp(goal.progress + change, 0, 100) }
-        : goal
-    ));
+    setGoals(
+      goals.map(goal =>
+        goal.id === id
+          ? {
+              ...goal,
+              progress: clamp(goal.progress + change, 0, MAX_PROGRESS)
+            }
+          : goal
+      )
+    );
   };
 
   const handleDeleteGoal = (id) => {
@@ -69,7 +76,7 @@ const GoalsPage = ({
         </div>
       ) : (
         <div className="space-y-4">
-          {goals.map((goal) => (
+          {goals.map(goal => (
             <div
               key={goal.id}
               className={`${cardClasses} p-6 rounded-2xl shadow-lg card-3d hover:shadow-2xl transition-all`}
@@ -103,7 +110,7 @@ const GoalsPage = ({
                 />
               </div>
 
-              {/* Control Buttons */}
+              {/* Controls */}
               <div className="flex gap-2">
                 <button
                   onClick={() => handleUpdateProgress(goal.id, -10)}
@@ -116,19 +123,20 @@ const GoalsPage = ({
                 >
                   -10%
                 </button>
+
                 <button
                   onClick={() => handleUpdateProgress(goal.id, 10)}
                   className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold transition-all"
-                  disabled={goal.progress === 100}
+                  disabled={goal.progress >= MAX_PROGRESS}
                 >
                   +10%
                 </button>
               </div>
 
-              {/* Completion Badge */}
-              {goal.progress === 100 && (
+              {/* Completed Badge */}
+              {goal.progress === MAX_PROGRESS && (
                 <div className="mt-3 bg-green-500/20 text-green-500 text-center py-2 rounded-xl font-bold text-sm">
-                  🎉 Goal Completed!
+                  🎯 Goal Completed (99%)
                 </div>
               )}
             </div>
@@ -140,3 +148,4 @@ const GoalsPage = ({
 };
 
 export default GoalsPage;
+
