@@ -66,12 +66,11 @@ function App() {
     const savedTheme = localStorage.getItem(STORAGE_KEYS.THEME);
     if (savedTheme !== null) setIsDarkTheme(savedTheme === 'true');
 
-    const savedUser = localStorage.getItem(STORAGE_KEYS.USER);
+    const savedUser = JSON.parse(localStorage.getItem(STORAGE_KEYS.USER) || 'null');
     if (savedUser) {
-      const u = JSON.parse(savedUser);
       setIsLoggedIn(true);
-      setUserId(u.userId);
-      setDisplayName(u.displayName || 'User');
+      setUserId(savedUser.userId);
+      setDisplayName(savedUser.displayName || savedUser.userId);
       setPage('home');
     }
 
@@ -89,7 +88,7 @@ function App() {
     checkNotificationPermission();
   }, []);
 
-  /* ---------------- SAVE STORAGE ---------------- */
+  /* ---------------- SAVE USER ---------------- */
   useEffect(() => {
     if (isLoggedIn) {
       localStorage.setItem(
@@ -111,8 +110,9 @@ function App() {
   /* ---------------- LOGIN ---------------- */
   const handleLogin = (uid) => {
     setUserId(uid);
+    setDisplayName(uid);
     setIsLoggedIn(true);
-    setPage('home');
+    setPage('settings'); // 👉 Force budget entry after login
     localStorage.setItem(STORAGE_KEYS.LOGIN_DATE, new Date().toISOString());
   };
 
@@ -139,7 +139,7 @@ function App() {
   /* ---------------- MAIN UI ---------------- */
   return (
     <div className={isDarkTheme ? 'dark' : ''}>
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">
+      <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors duration-300">
         <Navigation
           currentPage={page}
           setPage={setPage}
@@ -211,7 +211,7 @@ function App() {
           )}
         </div>
 
-        {/* MODALS */}
+        {/* MODALS (UNCHANGED) */}
         {showAddExpense && (
           <AddExpenseModal
             onClose={() => setShowAddExpense(false)}
@@ -266,3 +266,4 @@ function App() {
 }
 
 export default App;
+    
