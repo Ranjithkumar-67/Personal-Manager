@@ -7,16 +7,6 @@ import {
   getDayOfYear
 } from '../utils/helpers';
 import { quotes, getCategoryIcon } from '../utils/constants';
-useEffect(() => {
-  const showBudget = localStorage.getItem("showBudgetPrompt");
-
-  if (showBudget === "true") {
-    alert("Please enter your monthly spending amount");
-    // or navigate("/budget")
-    localStorage.removeItem("showBudgetPrompt");
-  }
-}, []);
-
 
 /* ---------------- Animated Percentage ---------------- */
 const AnimatedPercentage = ({ value }) => {
@@ -178,7 +168,16 @@ const HomePage = ({
                   ring-1 ring-white/40 dark:ring-white/10 "
                   >
 
-      
+      useEffect(() => {
+  const showBudget = localStorage.getItem("showBudgetPrompt");
+
+  if (showBudget === "true") {
+    alert("Please enter your monthly spending amount");
+    // or navigate("/budget")
+    localStorage.removeItem("showBudgetPrompt");
+  }
+}, []);
+
             <AnimatedPercentage value={Math.round(budgetProgress)} />
             <span className="mt-1 text-sm font-semibold text-slate-700 dark:text-slate-300">
               of {formatIndianRupee(monthlyLimit)}
