@@ -52,6 +52,8 @@ const LoginScreen = ({ onLogin }) => {
     }
     
     setLoginError('');
+      // ✅ SAVE USERNAME
+  localStorage.setItem("username", userId);
     onLogin(userId, pin);
   };
 
