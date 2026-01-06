@@ -29,7 +29,14 @@ const TasksPage = ({
     }
   };
 
-  // Separate completed and pending tasks
+  /* ✅ CHECK OVERDUE (LOGIC FIX) */
+  const isOverdue = (task) => {
+    if (!task.dueDate || task.completed) return false;
+    const now = new Date();
+    const taskDateTime = new Date(`${task.dueDate}T${task.dueTime || '23:59'}`);
+    return taskDateTime < now;
+  };
+
   const pendingTasks = tasks.filter(t => !t.completed);
   const completedTasks = tasks.filter(t => t.completed);
 
@@ -76,56 +83,77 @@ const TasksPage = ({
           {/* Pending Tasks */}
           {pendingTasks.length > 0 && (
             <div>
-              <h2 className="text-sm font-bold mb-2 opacity-60">PENDING ({pendingTasks.length})</h2>
+              <h2 className="text-sm font-bold mb-2 opacity-60">
+                PENDING ({pendingTasks.length})
+              </h2>
+
               <div className="space-y-3">
-                {pendingTasks.map((task) => (
-                  <div
-                    key={task.id}
-                    className={`${cardClasses} p-4 rounded-2xl shadow-lg card-3d`}
-                    onMouseMove={(e) => handle3DMove(e, 30)}
-                    onMouseLeave={handle3DLeave}
-                  >
-                    <div className="flex items-start gap-3">
-                      {/* Checkbox */}
-                      <button
-                        onClick={() => handleToggleTask(task.id)}
-                        className="flex-shrink-0 mt-1"
-                      >
-                        <Icons.Circle size={24} className="text-slate-600" />
-                      </button>
+                {pendingTasks.map((task) => {
+                  const overdue = isOverdue(task);
 
-                      {/* Content */}
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-bold text-lg mb-1">{task.title}</h3>
-                        <p className={`text-xs mb-2 ${isDarkTheme ? 'text-slate-500' : 'text-gray-500'}`}>
-                          {task.category}
-                        </p>
-                        
-                        <div className="flex items-center gap-3 flex-wrap text-sm">
-                          <div className="flex items-center gap-1">
-                            <Icons.Clock size={14} className={isDarkTheme ? 'text-slate-400' : 'text-gray-500'} />
-                            <span>{formatDate(task.dueDate)} • {task.dueTime}</span>
-                          </div>
+                  return (
+                    <div
+                      key={task.id}
+                      className={`${cardClasses} p-4 rounded-2xl shadow-lg card-3d`}
+                      onMouseMove={(e) => handle3DMove(e, 30)}
+                      onMouseLeave={handle3DLeave}
+                    >
+                      <div className="flex items-start gap-3">
+                        {/* Checkbox */}
+                        <button
+                          onClick={() => handleToggleTask(task.id)}
+                          className="flex-shrink-0 mt-1"
+                        >
+                          <Icons.Circle size={24} className="text-slate-600" />
+                        </button>
+
+                        {/* Content */}
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-bold text-lg mb-1">
+                            {task.title}
+                          </h3>
+
+                          <p className={`text-xs mb-2 ${isDarkTheme ? 'text-slate-500' : 'text-gray-500'}`}>
+                            {task.category}
+                          </p>
                           
-                          {task.reminder && (
-                            <div className="flex items-center gap-1 text-yellow-500">
-                              <Icons.AlarmClock size={14} />
-                              <span className="text-xs">Reminder</span>
+                          <div className="flex items-center gap-3 flex-wrap text-sm">
+                            <div className="flex items-center gap-1">
+                              <Icons.Clock size={14} />
+                              <span>
+                                {formatDate(task.dueDate)} • {task.dueTime}
+                              </span>
                             </div>
-                          )}
-                        </div>
-                      </div>
 
-                      {/* Delete Button */}
-                      <button
-                        onClick={() => handleDeleteTask(task.id)}
-                        className="text-red-500 hover:bg-red-500/20 p-2 rounded-lg transition-all flex-shrink-0"
-                      >
-                        <Icons.Trash2 size={16} />
-                      </button>
+                            {task.reminder && (
+                              <div className="flex items-center gap-1 text-yellow-500">
+                                <Icons.AlarmClock size={14} />
+                                <span className="text-xs">Reminder (In-app)</span>
+                              </div>
+                            )}
+
+                            {overdue && (
+                              <div className="flex items-center gap-1 text-red-500">
+                                <Icons.AlertTriangle size={14} />
+                                <span className="text-xs font-bold">
+                                  Overdue
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Delete */}
+                        <button
+                          onClick={() => handleDeleteTask(task.id)}
+                          className="text-red-500 hover:bg-red-500/20 p-2 rounded-lg transition-all flex-shrink-0"
+                        >
+                          <Icons.Trash2 size={16} />
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             </div>
           )}
@@ -133,7 +161,10 @@ const TasksPage = ({
           {/* Completed Tasks */}
           {completedTasks.length > 0 && (
             <div>
-              <h2 className="text-sm font-bold mb-2 opacity-60">COMPLETED ({completedTasks.length})</h2>
+              <h2 className="text-sm font-bold mb-2 opacity-60">
+                COMPLETED ({completedTasks.length})
+              </h2>
+
               <div className="space-y-3">
                 {completedTasks.map((task) => (
                   <div
@@ -141,7 +172,6 @@ const TasksPage = ({
                     className={`${cardClasses} p-4 rounded-2xl shadow-lg opacity-75`}
                   >
                     <div className="flex items-start gap-3">
-                      {/* Checkbox */}
                       <button
                         onClick={() => handleToggleTask(task.id)}
                         className="flex-shrink-0 mt-1"
@@ -149,24 +179,15 @@ const TasksPage = ({
                         <Icons.CheckCircle2 size={24} className="text-green-500" />
                       </button>
 
-                      {/* Content */}
                       <div className="flex-1 min-w-0">
                         <h3 className="font-bold text-lg mb-1 line-through opacity-50">
                           {task.title}
                         </h3>
-                        <p className={`text-xs mb-2 ${isDarkTheme ? 'text-slate-500' : 'text-gray-500'}`}>
-                          {task.category}
+                        <p className="text-xs opacity-50">
+                          {formatDate(task.dueDate)} • {task.dueTime}
                         </p>
-                        
-                        <div className="flex items-center gap-3 flex-wrap text-sm opacity-50">
-                          <div className="flex items-center gap-1">
-                            <Icons.Clock size={14} />
-                            <span>{formatDate(task.dueDate)} • {task.dueTime}</span>
-                          </div>
-                        </div>
                       </div>
 
-                      {/* Delete Button */}
                       <button
                         onClick={() => handleDeleteTask(task.id)}
                         className="text-red-500 hover:bg-red-500/20 p-2 rounded-lg transition-all flex-shrink-0"
@@ -186,3 +207,4 @@ const TasksPage = ({
 };
 
 export default TasksPage;
+
