@@ -64,7 +64,6 @@ const HomePage = ({
 
   const recentExpenses = [...expenses]
     .sort((a, b) => new Date(b.date) - new Date(a.date))
-    .slice(0, 3);
 
   const dailyQuote = quotes[getDayOfYear() % quotes.length];
 
