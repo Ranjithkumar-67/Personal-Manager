@@ -3,7 +3,6 @@ import * as Icons from './Icons';
 import {
   getGreeting,
   formatIndianRupee,
-  getCurrentMonthName,
   getDayOfYear
 } from '../utils/helpers';
 import { quotes, getCategoryIcon } from '../utils/constants';
@@ -16,7 +15,7 @@ const AnimatedPercentage = ({ value }) => {
     let start = 0;
     const duration = 800;
     const stepTime = 16;
-    const increment = value / (duration / stepTime);
+    const increment = value / (duration / stepTime || 1);
 
     const timer = setInterval(() => {
       start += increment;
@@ -50,20 +49,27 @@ const HomePage = ({
   handle3DLeave,
   onExportExpenses
 }) => {
- const cardClasses = isDarkTheme
-  ? 'bg-gradient-to-br from-slate-800/80 to-slate-900/80 border border-slate-700 text-white'
-  : 'bg-white border-2 border-blue-200 text-slate-900';
+  const cardClasses = isDarkTheme
+    ? 'bg-gradient-to-br from-slate-800/80 to-slate-900/80 border border-slate-700 text-white'
+    : 'bg-white border-2 border-blue-200 text-slate-900';
 
   const totalExpenses = expenses.reduce((sum, e) => sum + e.amount, 0);
+
   const todayExpenses = expenses
     .filter(e => e.date === new Date().toISOString().split('T')[0])
     .reduce((sum, e) => sum + e.amount, 0);
 
   const remaining = monthlyLimit - totalExpenses;
-  const budgetProgress = Math.min((totalExpenses / monthlyLimit) * 100, 100);
 
-  const recentExpenses = [...expenses]
-    .sort((a, b) => new Date(b.date) - new Date(a.date))
+  const budgetProgress =
+    monthlyLimit > 0
+      ? Math.min((totalExpenses / monthlyLimit) * 100, 100)
+      : 0;
+
+  /* ✅ SHOW ALL EXPENSES (FIXED) */
+  const recentExpenses = [...expenses].sort(
+    (a, b) => new Date(b.date) - new Date(a.date)
+  );
 
   const dailyQuote = quotes[getDayOfYear() % quotes.length];
 
@@ -86,13 +92,23 @@ const HomePage = ({
           </p>
         </div>
 
-        <button
-          onClick={() => setShowResetDialog(true)}
-          className="bg-red-500/20 text-red-600 dark:text-red-400 px-3 py-2 rounded-xl font-semibold flex items-center gap-2 hover:bg-red-500/30 transition-all"
-        >
-          <Icons.RefreshCw size={16} />
-          Reset
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={() => onExportExpenses('csv')}
+            className="bg-blue-500/20 text-blue-600 dark:text-blue-400 px-3 py-2 rounded-xl font-semibold flex items-center gap-2 hover:bg-blue-500/30 transition-all"
+          >
+            <Icons.Download size={16} />
+            Export
+          </button>
+
+          <button
+            onClick={() => setShowResetDialog(true)}
+            className="bg-red-500/20 text-red-600 dark:text-red-400 px-3 py-2 rounded-xl font-semibold flex items-center gap-2 hover:bg-red-500/30 transition-all"
+          >
+            <Icons.RefreshCw size={16} />
+            Reset
+          </button>
+        </div>
       </div>
 
       {/* BALANCE */}
@@ -156,18 +172,8 @@ const HomePage = ({
               strokeLinecap="round"
             />
           </svg>
-                <div
-                  className="
-                  absolute inset-0
-                  flex flex-col items-center justify-center text-center
-                  rounded-full
-                  backdrop-blur-xl
-                  bg-white/60
-                  dark:bg-slate-800/60
-                  ring-1 ring-white/40 dark:ring-white/10 "
-                  >
 
-
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-center backdrop-blur-xl bg-white/60 dark:bg-slate-800/60 rounded-full">
             <AnimatedPercentage value={Math.round(budgetProgress)} />
             <span className="mt-1 text-sm font-semibold text-slate-700 dark:text-slate-300">
               of {formatIndianRupee(monthlyLimit)}
@@ -234,3 +240,4 @@ const HomePage = ({
 };
 
 export default HomePage;
+                                        
