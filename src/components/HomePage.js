@@ -7,6 +7,16 @@ import {
   getDayOfYear
 } from '../utils/helpers';
 import { quotes, getCategoryIcon } from '../utils/constants';
+useEffect(() => {
+  const showBudget = localStorage.getItem("showBudgetPrompt");
+
+  if (showBudget === "true") {
+    alert("Please enter your monthly spending amount");
+    // or navigate("/budget")
+    localStorage.removeItem("showBudgetPrompt");
+  }
+}, []);
+
 
 /* ---------------- Animated Percentage ---------------- */
 const AnimatedPercentage = ({ value }) => {
