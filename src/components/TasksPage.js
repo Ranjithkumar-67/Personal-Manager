@@ -132,17 +132,6 @@ const TasksPage = ({
                               </div>
                             )}
 
-                            {overdue && (
-                              <div className="flex items-center gap-1 text-red-500">
-                                <Icons.AlertTriangle size={14} />
-                                <span className="text-xs font-bold">
-                                  Overdue
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-
                         {/* Delete */}
                         <button
                           onClick={() => handleDeleteTask(task.id)}
