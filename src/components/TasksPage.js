@@ -11,6 +11,7 @@ const TasksPage = ({
   handle3DLeave,
   onExportTasks
 }) => {
+
   const cardClasses = isDarkTheme
     ? 'bg-gradient-to-br from-slate-800 to-slate-900 border border-slate-700'
     : 'bg-white border-2 border-blue-200';
@@ -29,7 +30,6 @@ const TasksPage = ({
     }
   };
 
-  /* ✅ CHECK OVERDUE (LOGIC FIX) */
   const isOverdue = (task) => {
     if (!task.dueDate || task.completed) return false;
     const now = new Date();
@@ -42,6 +42,7 @@ const TasksPage = ({
 
   return (
     <div className="space-y-4 animate-slideIn">
+
       {/* Header */}
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-black">TASKS</h1>
@@ -53,6 +54,7 @@ const TasksPage = ({
           >
             <Icons.Download size={18} />
           </button>
+
           <button
             onClick={() => onExportTasks('txt')}
             className="p-2 bg-blue-500/20 text-blue-500 rounded-lg hover:bg-blue-500/30 transition-all"
@@ -60,6 +62,7 @@ const TasksPage = ({
           >
             <Icons.FileText size={18} />
           </button>
+
           <button
             onClick={() => setShowAddTask(true)}
             className="bg-indigo-600 text-white px-4 py-2 rounded-xl font-bold flex items-center gap-2 hover:bg-indigo-700 transition-all hover:scale-105"
@@ -99,6 +102,7 @@ const TasksPage = ({
                       onMouseLeave={handle3DLeave}
                     >
                       <div className="flex items-start gap-3">
+
                         {/* Checkbox */}
                         <button
                           onClick={() => handleToggleTask(task.id)}
@@ -116,8 +120,9 @@ const TasksPage = ({
                           <p className={`text-xs mb-2 ${isDarkTheme ? 'text-slate-500' : 'text-gray-500'}`}>
                             {task.category}
                           </p>
-                          
+
                           <div className="flex items-center gap-3 flex-wrap text-sm">
+
                             <div className="flex items-center gap-1">
                               <Icons.Clock size={14} />
                               <span>
@@ -132,6 +137,9 @@ const TasksPage = ({
                               </div>
                             )}
 
+                          </div>
+                        </div>
+
                         {/* Delete */}
                         <button
                           onClick={() => handleDeleteTask(task.id)}
@@ -139,6 +147,7 @@ const TasksPage = ({
                         >
                           <Icons.Trash2 size={16} />
                         </button>
+
                       </div>
                     </div>
                   );
@@ -161,6 +170,7 @@ const TasksPage = ({
                     className={`${cardClasses} p-4 rounded-2xl shadow-lg opacity-75`}
                   >
                     <div className="flex items-start gap-3">
+
                       <button
                         onClick={() => handleToggleTask(task.id)}
                         className="flex-shrink-0 mt-1"
@@ -183,12 +193,14 @@ const TasksPage = ({
                       >
                         <Icons.Trash2 size={16} />
                       </button>
+
                     </div>
                   </div>
                 ))}
               </div>
             </div>
           )}
+
         </>
       )}
     </div>
@@ -196,4 +208,3 @@ const TasksPage = ({
 };
 
 export default TasksPage;
-
